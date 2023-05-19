@@ -62,3 +62,40 @@ blockquote:before {
 blockquote:after {
   content: close-quote;
 }
+
+.transparentBtn {
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  height: 30px;
+  width: 100px;
+  color: #3498db;
+  font-size: 1em;
+}
+
+.dark-mode {
+  /* Dark mode styles */
+  background-color: #333;
+  color: #fff;
+}
+
+.light-mode {
+  /* Light mode styles */
+  background-color: #fff;
+  color: #333;
+}
+
+.bookmarkBtn {
+  position: absolute;
+  top: 100px;
+  left: 350px;
+  width: 36px;
+  z-index: 999;
+  background: transparent;
+  border: none;
+  background-color: #bdd2f9;
+  padding: 7px;
+  border-radius: 18px;
+  cursor: pointer
+}
+

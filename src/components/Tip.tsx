@@ -4,16 +4,21 @@ import "../style/Tip.css";
 
 interface State {
   compact: boolean;
-  bookMark : boolean;
+  bookMark: boolean;
   title: string;
   text: string;
   emoji: string;
-  color: string
- 
+  color: string;
 }
 
 interface Props {
-  onConfirm: (comment: { bookMark:boolean; title: string;  text: string; emoji: string; color:string;  }) => void;
+  onConfirm: (comment: {
+    bookMark: boolean;
+    title: string;
+    text: string;
+    emoji: string;
+    color: string;
+  }) => void;
   onOpen: () => void;
   onUpdate?: () => void;
 }
@@ -26,7 +31,6 @@ export class Tip extends Component<Props, State> {
     text: "",
     emoji: "",
     color: "",
-   
   };
 
   // for TipContainer
@@ -40,7 +44,7 @@ export class Tip extends Component<Props, State> {
 
   render() {
     const { onConfirm, onOpen } = this.props;
-    const { compact,bookMark,title, text, emoji , color ,  } = this.state;
+    const { compact, bookMark, title, text, emoji, color } = this.state;
 
     return (
       <div className="Tip">
@@ -59,21 +63,19 @@ export class Tip extends Component<Props, State> {
             className="Tip__card"
             onSubmit={(event) => {
               event.preventDefault();
-              onConfirm({ title,text, emoji, color, bookMark});
+              onConfirm({ title, text, emoji, color, bookMark });
             }}
           >
-           
             <div className="resize ">
               <label className="textfont">Title</label>
               <input
-              className="inputfield"
+                className="inputfield"
                 placeholder="Title"
                 autoFocus
                 value={title}
                 onChange={(event) =>
                   this.setState({ title: event.target.value })
                 }
-               
               />
               <label className="textfont">Comment</label>
               <textarea
@@ -83,9 +85,8 @@ export class Tip extends Component<Props, State> {
                 onChange={(event) =>
                   this.setState({ text: event.target.value })
                 }
-                
               />
-              <div>
+              {/* <div style={{ margin: "10px 0" }}>
                 {["💩", "😱", "😍", "🔥", "😳", "⚠️"].map((_emoji) => (
                   <label key={_emoji}>
                     <input
@@ -100,43 +101,55 @@ export class Tip extends Component<Props, State> {
                     {_emoji}
                   </label>
                 ))}
-                </div>
-                <label  className="textfont">High Light Options</label>
-                <div className="colors">
-                
-                {["red", "green", "yellow","blue","pink"].map((_color) => (
-                  // <label key={_color}>
-                  
-                  //   <input
-                  //     checked={color === _color}
-                  //     type="radio"
-                  //     name="color"
-                  //     value={_color}
-                  //     onChange={(event) =>
-                  //       this.setState({ color: event.target.value })
-                  //     }
-                  //   />
-                  //   {_color}
-                  // </label>
-
-                  <div style={{width: "16px" , height: "16px" , borderRadius: "16px" , backgroundColor: _color , marginRight:'10px' }} onClick={() =>
-                          this.setState({ color: _color })
-                        }/>
+              </div> */}
+              {/* <div className="colors">
+                {["red", "green", "yellow", "blue", "pink"].map((_color) => (
+                  <button
+                    style={{
+                      width: "16px",
+                      height: "16px",
+                      borderRadius: "16px",
+                      backgroundColor: _color,
+                      marginRight: "10px",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      this.setState({ color: _color });
+                    }}
+                  ></button>
+                ))}
+              </div> */}
+            </div>
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              margin: "18px"
+            }}>
+            <div className="colors">
+                {["red", "green", "yellow", "blue", "pink"].map((_color) => (
+                  <button
+                    style={{
+                      width: "16px",
+                      height: "16px",
+                      borderRadius: "16px",
+                      backgroundColor: _color,
+                      marginRight: "10px",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      this.setState({ color: _color });
+                    }}
+                  ></button>
                 ))}
               </div>
-              <div>
-            <input type="checkbox" id="bookmark" name="bookmark" className="book_mark"
-
-              onChange={(e) => this.setState({
-              bookMark: e.target.checked
-            })}/><p className="book_mark textfont">Book Mark</p> 
-
-            </div>
-             
-             
-            </div>
             <div>
               <input type="submit" value="Save" className="savebtn" />
+            </div>
             </div>
           </form>
         )}

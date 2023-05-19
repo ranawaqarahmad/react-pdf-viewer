@@ -12,7 +12,7 @@
   padding: 5px;
   border-radius: 5px;
   width: 94%;
-  margin-top: 3px
+  margin-top: 3px;
 }
 .Tip__card {
   /* padding: 10px;
@@ -23,18 +23,17 @@
   border-radius: 14px;
   box-shadow: 0 2px 4px rgba(37, 40, 43, 0.2); */
 
-
   /* position: absolute; */
-    /* left: 734px; */
-    /* top: 375.4375px; */
-    width: 460px;
-    height: 253px;
-    box-sizing: border-box;
-    padding: 4px;
-    border-radius: 8px;
-    background-color: rgba(0,0,0,.8);
-    box-shadow: 0px 8px 12px rgba(0,0,0,0.2);
-    /* z-index: 10; */
+  /* left: 734px; */
+  /* top: 375.4375px; */
+  width: 460px;
+  height: 250px;
+  box-sizing: border-box;
+  padding: 8px;
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.8);
+  box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.2);
+  /* z-index: 10; */
 }
 .book_mark {
   display: inline;
@@ -48,7 +47,7 @@
   height: 70px;
   display: block;
   border-radius: 12px;
-  margin-bottom:7px;
+  margin-bottom: 7px;
   width: 96%;
   margin-top: 3px;
 }
@@ -61,16 +60,13 @@
   padding: 0 14px;
 }
 .savebtn {
-  position: absolute;
-    right: 18px;
-    bottom: 4px;
-    margin-bottom: 4px;
-    border-radius: 5px;
-    padding: 5px;
-    color: white;
-    background-color: #b1acb1f5;
+  margin-bottom: 4px;
+  border-radius: 6px;
+  padding: 6px 16px;
+  background-color: #fafbfc;
+  border: none;
+  cursor: pointer
 }
-
 
 .Tip__card input[type="submit"] {
   margin-top: 5px;

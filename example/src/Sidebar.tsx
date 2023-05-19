@@ -19,7 +19,7 @@ export function Sidebar({
   resetHighlights,
   bookmarks
 }: Props) {
-  console.log(highlights)
+
   return (
     <div className="sidebar" style={{ width: "25vw" }}>
       <div className="description" style={{ padding: "1rem" }}>
@@ -38,7 +38,7 @@ export function Sidebar({
           </small>
         </p>
       </div>
-
+      <h2 style={{ margin: "1rem" }}>{bookmarks ? "Bookmarks" : "Highlights"}</h2>
       <ul className="sidebar__highlights">
        {
         bookmarks ? <>

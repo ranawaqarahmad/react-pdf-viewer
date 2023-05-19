@@ -1,4 +1,4 @@
-import React, { createContext, Component, useState} from "react";
+import React, { createContext, Component, useState } from "react";
 
 import {
   PdfLoader,
@@ -14,25 +14,24 @@ import {
 // import { NavBar } from "./navBar"
 
 // import {HighLight}  from "./pages/highlighte";
-import DarkMode from "./pages/darkmode"
+import DarkMode from "./pages/darkmode";
 import type { IHighlight, NewHighlight } from "./react-pdf-highlighter";
 
 import { testHighlights as _testHighlights } from "./test-highlights";
 import { Spinner } from "./Spinner";
 import { Sidebar } from "./Sidebar";
-
+import bookMarkIcon from "./assets/bookmark.png";
 import "./style/App.css";
 export const ThemeContext = createContext(null);
-
 
 const testHighlights: Record<string, Array<IHighlight>> = _testHighlights;
 
 interface State {
-   bookmarks: boolean;
+  bookmarks: boolean;
   url: string;
   highlights: Array<IHighlight>;
+  currentPage: number;
 }
-
 
 const getNextId = () => String(Math.random()).slice(2);
 
@@ -62,18 +61,15 @@ const searchParams = new URLSearchParams(document.location.search);
 const initialUrl = searchParams.get("url") || PRIMARY_PDF_URL;
 
 class App extends Component<{}, State> {
- 
   state = {
     url: initialUrl,
     highlights: testHighlights[initialUrl]
       ? [...testHighlights[initialUrl]]
       : [],
-      bookmarks:  false
+    bookmarks: false,
+    currentPage: 1,
   };
- 
 
-
- 
   resetHighlights = () => {
     this.setState({
       highlights: [],
@@ -147,113 +143,198 @@ class App extends Component<{}, State> {
     });
   }
 
+  getCurrentInViewElement() {
+    const viewportWidth =
+      window.innerWidth || document.documentElement.clientWidth;
+    const viewportHeight =
+      window.innerHeight || document.documentElement.clientHeight;
+
+    const viewportCenterX = Math.floor(viewportWidth / 2);
+    console.log(viewportCenterX);
+    const viewportCenterY = Math.floor(viewportHeight / 2);
+    console.log(viewportCenterY);
+    const element = document.elementFromPoint(viewportCenterX, viewportCenterY);
+    console.log(element);
+    console.log(element?.parentElement);
+    const parentEle = element?.parentElement;
+    const pageNum = parentEle?.getAttribute("data-page-number");
+
+    return pageNum;
+  }
+
   render() {
-    // const [darkMode , setDarkMode] = useState<boolean>(false)
     const { url, highlights } = this.state;
-// console.log(darkMode)
+
     return (
-      // <ThemeContext.Provider value {{theme ,toggleTheme }} >
-      <div className="App" 
-      // id={theme} 
-      style={{ display: "flex", height: "100vh" }}>
-        <button onClick={() => this.setState({
-          bookmarks: true 
-        })} >Bookmarks</button>
-        <button onClick={() => this.setState({
-          bookmarks: false 
-        })} >Highlights</button>
-        <Sidebar
-          highlights={highlights}
-          resetHighlights={this.resetHighlights}
-          toggleDocument={this.toggleDocument}
-          bookmarks={this.state.bookmarks}
-        />
+      <div className="App" style={{ height: "100vh" }}>
         <div
           style={{
-            height: "100vh",
-            width: "75vw",
-            position: "relative",
+            borderBottom: "1px solid black",
+            padding: "20px 0",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
           }}
         >
-          <PdfLoader url={url} beforeLoad={<Spinner />}>
-            {(pdfDocument) => (
-              <PdfHighlighter
-                pdfDocument={pdfDocument}
-                enableAreaSelection={(event) => event.altKey}
-                onScrollChange={resetHash}
-                // pdfScaleValue="page-width"
-                scrollRef={(scrollTo) => {
-                  this.scrollViewerTo = scrollTo;
+          <button
+            className="transparentBtn"
+            onClick={() =>
+              this.setState({
+                bookmarks: true,
+              })
+            }
+          >
+            Bookmarks
+          </button>
 
-                  this.scrollToHighlightFromHash();
-                }}
-                onSelectionFinished={(
-                  position,
-                  content,
-                  hideTipAndSelection,
-                  transformSelection
-                ) => (
-                  <Tip
-                    onOpen={transformSelection}
-                    onConfirm={(comment) => {
-                      this.addHighlight({ content, position, comment });
+          <button
+            className="bookmarkBtn"
+            onClick={() => {
+              const currentPage = this.getCurrentInViewElement();
+              if (currentPage) {
+                const bookMark = {
+                  content: {},
+                  comment: {
+                    bookMark: true,
+                    text: "",
+                    emoji: "",
+                    color: "",
+                    title: `Book marked on Page ${currentPage}`,
+                  },
+                  position: {
+                    boundingRect: {
+                      x1: 255.73419189453125,
+                      y1: 139.140625,
+                      x2: 574.372314453125,
+                      y2: 165.140625,
+                      width: 809.9999999999999,
+                      height: 1200,
+                    },
+                    pageNumber: Number(currentPage),
+                    rects: [
+                      {
+                        x1: 255.73419189453125,
+                        y1: 139.140625,
+                        x2: 574.372314453125,
+                        y2: 165.140625,
+                        width: 809.9999999999999,
+                        height: 1200,
+                      },
+                    ],
+                  },
+                };
+                this.addHighlight(bookMark);
+              } else {
+                alert("Scroll a bit to properly defining page number!!");
+              }
+            }}
+          >
+            <img src={bookMarkIcon} width="20px" />
+          </button>
+          <button
+            className="transparentBtn"
+            onClick={() =>
+              this.setState({
+                bookmarks: false,
+              })
+            }
+          >
+            Heighlights
+          </button>
+        </div>
+        <div style={{ display: "flex", height: "100vh" }}>
+          <Sidebar
+            highlights={highlights}
+            resetHighlights={this.resetHighlights}
+            toggleDocument={this.toggleDocument}
+            bookmarks={this.state.bookmarks}
+          />
+          <div
+            style={{
+              height: "100vh",
+              width: "75vw",
+              position: "relative",
+            }}
+          >
+            <PdfLoader url={url} beforeLoad={<Spinner />}>
+              {(pdfDocument) => (
+                <PdfHighlighter
+                  pdfDocument={pdfDocument}
+                  enableAreaSelection={(event) => event.altKey}
+                  onScrollChange={resetHash}
+                  // pdfScaleValue="page-width"
+                  scrollRef={(scrollTo) => {
+                    this.scrollViewerTo = scrollTo;
 
-                      hideTipAndSelection();
-                    }}
-                  />
-                )}
-                highlightTransform={(
-                  highlight,
-                  index,
-                  setTip,
-                  hideTip,
-                  viewportToScaled,
-                  screenshot,
-                  isScrolledTo
-                ) => {
-                  const isTextHighlight = !Boolean(
-                    highlight.content && highlight.content.image
-                  );
+                    this.scrollToHighlightFromHash();
+                  }}
+                  onSelectionFinished={(
+                    position,
+                    content,
+                    hideTipAndSelection,
+                    transformSelection
+                  ) => (
+                    <Tip
+                      onOpen={transformSelection}
+                      onConfirm={(comment) => {
+                        this.addHighlight({ content, position, comment });
 
-                  const component = isTextHighlight ? (
-                    <Highlight
-                      isScrolledTo={isScrolledTo}
-                      position={highlight.position}
-                      comment={highlight.comment}
-                    />
-                  ) : (
-                    <AreaHighlight
-                      isScrolledTo={isScrolledTo}
-                      highlight={highlight}
-                      onChange={(boundingRect) => {
-                        this.updateHighlight(
-                          highlight.id,
-                          { boundingRect: viewportToScaled(boundingRect) },
-                          { image: screenshot(boundingRect) }
-                        );
+                        hideTipAndSelection();
                       }}
                     />
-                  );
+                  )}
+                  highlightTransform={(
+                    highlight,
+                    index,
+                    setTip,
+                    hideTip,
+                    viewportToScaled,
+                    screenshot,
+                    isScrolledTo
+                  ) => {
+                    const isTextHighlight = !Boolean(
+                      highlight.content && highlight.content.image
+                    );
 
-                  return (
-                    <Popup
-                      popupContent={<HighlightPopup {...highlight} />}
-                      onMouseOver={(popupContent) =>
-                        setTip(highlight, () => popupContent)
-                      }
-                      onMouseOut={hideTip}
-                      key={index}
-                      children={component}
-                    />
-                  );
-                }}
-                highlights={highlights}
-              />
-            )}
-          </PdfLoader>
+                    const component = isTextHighlight ? (
+                      <Highlight
+                        isScrolledTo={isScrolledTo}
+                        position={highlight.position}
+                        comment={highlight.comment}
+                      />
+                    ) : (
+                      <AreaHighlight
+                        isScrolledTo={isScrolledTo}
+                        highlight={highlight}
+                        onChange={(boundingRect) => {
+                          this.updateHighlight(
+                            highlight.id,
+                            { boundingRect: viewportToScaled(boundingRect) },
+                            { image: screenshot(boundingRect) }
+                          );
+                        }}
+                      />
+                    );
+
+                    return (
+                      <Popup
+                        popupContent={<HighlightPopup {...highlight} />}
+                        onMouseOver={(popupContent) =>
+                          setTip(highlight, () => popupContent)
+                        }
+                        onMouseOut={hideTip}
+                        key={index}
+                        children={component}
+                      />
+                    );
+                  }}
+                  highlights={highlights}
+                />
+              )}
+            </PdfLoader>
+          </div>
         </div>
       </div>
-      // </ThemeContext.Provider>
     );
   }
 }
