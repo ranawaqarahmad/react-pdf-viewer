@@ -28,9 +28,11 @@ const testHighlights: Record<string, Array<IHighlight>> = _testHighlights;
 
 interface State {
   bookmarks: boolean;
+  search: boolean;
   url: string;
   highlights: Array<IHighlight>;
   currentPage: number;
+  searchResults: any
 }
 
 const getNextId = () => String(Math.random()).slice(2);
@@ -67,7 +69,9 @@ class App extends Component<{}, State> {
       ? [...testHighlights[initialUrl]]
       : [],
     bookmarks: false,
+    search: false,
     currentPage: 1,
+    searchResults: Array<object>,
   };
 
   resetHighlights = () => {
@@ -162,6 +166,10 @@ class App extends Component<{}, State> {
     return pageNum;
   }
 
+
+
+
+
   render() {
     const { url, highlights } = this.state;
 
@@ -181,11 +189,21 @@ class App extends Component<{}, State> {
             onClick={() =>
               this.setState({
                 bookmarks: true,
+                search:false
               })
             }
           >
             Bookmarks
           </button>
+          <button className="transparentBtn" onClick={() => {
+            this.setState({search:true,bookmarks:false})
+            // this.searchHandler()
+          }}>
+            Search
+          </button>
+          {/* <button className="transparentBtn" onClick={this.scrollToPage}>
+            Scroll To
+          </button> */}
 
           <button
             className="bookmarkBtn"
@@ -236,6 +254,7 @@ class App extends Component<{}, State> {
             onClick={() =>
               this.setState({
                 bookmarks: false,
+                search:false
               })
             }
           >
@@ -248,6 +267,7 @@ class App extends Component<{}, State> {
             resetHighlights={this.resetHighlights}
             toggleDocument={this.toggleDocument}
             bookmarks={this.state.bookmarks}
+            search={this.state.search}
           />
           <div
             style={{
